@@ -34,7 +34,6 @@ class ProjectOverview extends React.Component {
         fetch(request)
             .then(response => {
                 if (!response.ok) {
-                    console.log(response);
                     throw new Error("Validation error")
                 }
                 return response.json();
@@ -43,7 +42,7 @@ class ProjectOverview extends React.Component {
                 this.state.projects.push(project);
                 this.setState(this.state.projects);
             })
-            .catch(error => console.log(error));
+            .catch(error => this.props.errorHandler(error.toString()));
     };
 
     updateProject = (project) => {
@@ -68,7 +67,7 @@ class ProjectOverview extends React.Component {
                 tmp.offer = project.offer;
                 this.setState({projects: this.state.projects});
             })
-            .catch(error => console.log(error));
+            .catch(error => this.props.errorHandler(error.toString()));
     };
 
     deleteProject = (id) => {
@@ -84,6 +83,7 @@ class ProjectOverview extends React.Component {
                     throw new Error("cannot delete");
                 }
             })
+            .catch(error => this.props.errorHandler(error.toString()));
     };
 
     render() {
