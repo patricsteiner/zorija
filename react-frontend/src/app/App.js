@@ -7,34 +7,18 @@ import ProjectOverview from '../project/ProjectOverview'
 
 class App extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            projects: [
-                {id: 0, name: "p1", offer: 123},
-                {id: 1, name: "p2", offer: 234}
-            ]
-        };
-    }
-
-    fetchProjects = () => {
-        // TODO
-    };
-
-    componentDidMount() {
-    }
-
     render() {
         return (
             <div className="App">
                 <Header/>
                 <div className='container'>
-                    <ProjectOverview projects={this.state.projects}/>
+                    <ProjectOverview url='http://localhost:8080'/>
                 </div>
                 <Footer/>
             </div>
         );
     }
+
 }
 
 export default App;

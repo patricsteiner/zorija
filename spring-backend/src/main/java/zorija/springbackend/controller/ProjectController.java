@@ -1,5 +1,6 @@
 package zorija.springbackend.controller;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController("/")
+@CrossOrigin
 public class ProjectController {
 
     private ProjectRepository projectRepository;
@@ -21,7 +23,7 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Project>> getAll() {
+    public ResponseEntity<List<Project>> findAll() {
         return new ResponseEntity<>(projectRepository.findAll(), HttpStatus.OK);
     }
 
@@ -35,12 +37,15 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<Project> create(@RequestBody @Valid Project project, BindingResult bindingResult) {
+    public ResponseEntity<Project> create(@Valid @RequestBody Project project, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
         }
+        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        int nextId = projectRepository.findAll(sort).stream().findFirst().map(ot -> ot.getId() + 1).orElse(1);
+        project.setId(nextId);
         projectRepository.save(project);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(project, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

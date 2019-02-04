@@ -9,31 +9,87 @@ class ProjectOverview extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            projects: this.props.projects
+            projects: []
         };
     }
 
+    componentDidMount() {
+        this.fetchProjects();
+    }
+
+    fetchProjects = () => {
+        fetch(this.props.url)
+            .then(result => result.json())
+            .then(result => this.setState({projects: result}));
+    };
+
     createProject = (project) => {
-        let projects = this.state.projects;
-        projects.push({id: projects.length, name: project.name, offer: project.offer});
-        this.setState({projects: projects})
+        let request = new Request(this.props.url, {
+            method: 'POST',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(project)
+        });
+        fetch(request)
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response);
+                    throw new Error("Validation error")
+                }
+                return response.json();
+            })
+            .then(project => {
+                this.state.projects.push(project);
+                this.setState(this.state.projects);
+            })
+            .catch(error => console.log(error));
     };
 
     updateProject = (project) => {
-        let tmp = this.state.projects.find(it => it.id === project.id);
-        tmp.name = project.name;
-        tmp.offer = project.offer;
-        this.setState({projects: this.state.projects});
+        let request = new Request(this.props.url + '/' + project.id, {
+            method: 'PUT',
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+            body: JSON.stringify(project)
+        });
+        fetch(request)
+            .then(response => {
+                if (!response.ok) {
+                    console.log(response);
+                    throw new Error("Validation error");
+                }
+                return response.json();
+            })
+            .then(project => {
+                let tmp = this.state.projects.find(it => it.id === project.id);
+                tmp.name = project.name;
+                tmp.offer = project.offer;
+                this.setState({projects: this.state.projects});
+            })
+            .catch(error => console.log(error));
     };
 
     deleteProject = (id) => {
-        let projects = this.state.projects.filter(project => project.id !== id);
-        this.setState({projects: projects})
+        let request = new Request(this.props.url + '/' + id, {
+            method: 'DELETE',
+        });
+        fetch(request)
+            .then(response => {
+                if (response.ok) {
+                    let projects = this.state.projects.filter(project => project.id !== id);
+                    this.setState({projects: projects})
+                } else {
+                    throw new Error("cannot delete");
+                }
+            })
     };
 
     render() {
         let projects = this.state.projects.map(project =>
             <tr key={project.id}>
+                <td>{project.id}</td>
                 <td>{project.name}</td>
                 <td>{project.offer}</td>
                 <td>
@@ -50,6 +106,7 @@ class ProjectOverview extends React.Component {
                 <Table hover>
                     <thead>
                     <tr>
+                        <th>Id</th>
                         <th>Name</th>
                         <th>Offer</th>
                         <th></th>
