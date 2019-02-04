@@ -15,7 +15,6 @@ class App extends Component {
                 {id: 1, name: "p2", offer: 234}
             ]
         };
-        this.fetchProjects();
     }
 
     fetchProjects = () => {
