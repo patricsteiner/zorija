@@ -8,14 +8,14 @@ import FormGroup from "reactstrap/es/FormGroup";
 import Label from "reactstrap/es/Label";
 import Input from "reactstrap/es/Input";
 
-class ProjectUpdateDialog extends React.Component {
+class ProjectCreateDialog extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             isOpen: false,
-            name: props.project.name,
-            offer: props.project.offer
+            name: '',
+            offer: ''
         }
     }
 
@@ -28,8 +28,8 @@ class ProjectUpdateDialog extends React.Component {
     };
 
     save = () => {
-        this.props.updateHandler(this.props.project.id, this.state.name, this.state.offer);
-        this.setState({isOpen: false});
+        this.props.createHandler({name: this.state.name, offer: this.state.offer});
+        this.setState({isOpen: false, name: '', offer: ''});
     };
 
     handleChange = (event) => {
@@ -38,11 +38,11 @@ class ProjectUpdateDialog extends React.Component {
 
     render() {
         return (
-            <div className="float-right">
-                <Button color="secondary" onClick={this.open}><i className="fa fa-edit"/></Button>
+            <div style={{float: 'right'}}>
+                <Button color="primary" onClick={this.open}><i className="fa fa-plus"/></Button>
                 <Modal isOpen={this.state.isOpen} toggle={this.close} size="lg">
                     <ModalHeader toggle={this.close}>
-                        Edit Project
+                        Add a Project
                     </ModalHeader>
                     <ModalBody>
                         <Form>
@@ -72,4 +72,4 @@ class ProjectUpdateDialog extends React.Component {
 
 }
 
-export default ProjectUpdateDialog;
+export default ProjectCreateDialog;

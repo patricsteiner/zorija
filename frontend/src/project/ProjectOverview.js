@@ -13,16 +13,16 @@ class ProjectOverview extends React.Component {
         };
     }
 
-    createProject = (name, offer) => {
+    createProject = (project) => {
         let projects = this.state.projects;
-        projects.push({id: projects.length, name: name, offer: offer});
+        projects.push({id: projects.length, name: project.name, offer: project.offer});
         this.setState({projects: projects})
     };
 
-    updateProject = (id, name, offer) => {
-        let project = this.state.projects.find(project => project.id === id);
-        project.name = name;
-        project.offer = offer;
+    updateProject = (project) => {
+        let tmp = this.state.projects.find(it => it.id === project.id);
+        tmp.name = project.name;
+        tmp.offer = project.offer;
         this.setState({projects: this.state.projects});
     };
 
@@ -62,12 +62,5 @@ class ProjectOverview extends React.Component {
     }
 
 }
-
-ProjectOverview.defaultProps = {
-    projects: [
-        {id: 0, name: "asasdasddsasd", offer: 20},
-        {id: 1, name: "qweqwwqw", offer: 30}
-    ]
-};
 
 export default ProjectOverview;
