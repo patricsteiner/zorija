@@ -18,13 +18,13 @@ class ProjectOverview extends React.Component {
     }
 
     fetchProjects = () => {
-        fetch(this.props.url)
+        fetch(this.props.serverUrl)
             .then(result => result.json())
             .then(result => this.setState({projects: result}));
     };
 
     createProject = (project) => {
-        let request = new Request(this.props.url, {
+        let request = new Request(this.props.serverUrl, {
             method: 'POST',
             headers: new Headers({
                 'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ class ProjectOverview extends React.Component {
     };
 
     updateProject = (project) => {
-        let request = new Request(this.props.url + '/' + project.id, {
+        let request = new Request(this.props.serverUrl + '/' + project.id, {
             method: 'PUT',
             headers: new Headers({
                 'Content-Type': 'application/json'
@@ -71,7 +71,7 @@ class ProjectOverview extends React.Component {
     };
 
     deleteProject = (id) => {
-        let request = new Request(this.props.url + '/' + id, {
+        let request = new Request(this.props.serverUrl + '/' + id, {
             method: 'DELETE',
         });
         fetch(request)

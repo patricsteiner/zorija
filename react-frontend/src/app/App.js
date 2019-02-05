@@ -8,6 +8,8 @@ import Alert from "reactstrap/es/Alert";
 
 class App extends Component {
 
+    serverUrl = "http://localhost:8081";
+
     constructor(props) {
         super(props);
         this.state = {
@@ -29,7 +31,7 @@ class App extends Component {
                 <Header/>
                 <div className='container'>
                     <Alert color="danger" isOpen={this.state.alertOpen} toggle={this.dismissAlert}>{this.state.alert}</Alert>
-                    <ProjectOverview url='http://localhost:8080' errorHandler={this.errorHandler}/>
+                    <ProjectOverview serverUrl={this.serverUrl} errorHandler={this.errorHandler}/>
                 </div>
                 <Footer/>
             </div>
