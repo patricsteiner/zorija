@@ -9,17 +9,13 @@ dotenv.load({silent: true});
 log4js.configure('log4js.json');
 const logger = log4js.getLogger('app');
 
-
 mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true});
-
 const Project = mongoose.model('Project', {_id: Number, name: String, offer: Number});
 
 const app = express();
 app.use(bodyParser.json());
-
-const PORT = process.env.PORT || 8081;
-
 app.use(cors());
+const PORT = process.env.PORT || 8081;
 
 app.get('/', (req, res) => {
     Project.find({}, (err, docs) => {
