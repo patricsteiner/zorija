@@ -2,6 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const log4js = require('log4js');
+const dotenv = require('dotenv-extended');
+
+dotenv.load({silent: true});
+log4js.configure('log4js.json');
+const logger = log4js.getLogger('app');
+
 
 mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true});
 
@@ -9,14 +16,15 @@ const Project = mongoose.model('Project', {_id: Number, name: String, offer: Num
 
 const app = express();
 app.use(bodyParser.json());
-const port = 8081;
+
+const PORT = process.env.PORT || 8081;
 
 app.use(cors());
 
 app.get('/', (req, res) => {
     Project.find({}, (err, docs) => {
         if (err) {
-            console.log(err);
+            logger.error(err);
         } else {
             res.send(mapId(docs));
         }
@@ -26,11 +34,10 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
     Project.findOne().sort('-_id').exec((err, doc) => {
         let newId = doc == null ? 1 : doc._id + 1;
-        console.log(req);
         const project = new Project(req.body);
         project._id = newId;
         project.save().then(() => {
-            console.log('project saved');
+            logger.info('project saved');
             res.send(mapId(project));
         });
     });
@@ -39,17 +46,16 @@ app.post('/', (req, res) => {
 app.put('/:id', (req, res) => {
     let project = new Project(req.body);
     project._id = req.params.id;
-    project.update().then(() => {
-        console.log('project updated');
+    project.updateOne().then(() => {
+        logger.info('project updated');
         res.send(mapId(project));
     });
 });
 
 app.delete('/:id', (req, res) => {
-    console.log(req.params);
-    Project.deleteOne({_id: req.params.id}).exec(() => res.send(200));
+    Project.deleteOne({_id: req.params.id}).exec(() => res.sendStatus(200));
 });
 
 mapId = docs => JSON.parse(JSON.stringify(docs).replace(/"_id":/g, "\"id\":"));
 
-app.listen(port, () => console.log(`Express backend listening on port ${port}!`));
+app.listen(PORT, () => logger.info(`Express backend listening on port ${PORT}!`));
